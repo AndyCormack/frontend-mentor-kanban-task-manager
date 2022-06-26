@@ -1,10 +1,10 @@
-import { Form, Link } from "@remix-run/react";
-import { useOptionalUser } from "~/utils";
+import { Form, Link } from '@remix-run/react'
+import { useOptionalUser } from '~/utils'
 
-import logo from "~/assets/logo-light.svg";
+import logo from '~/assets/logo-light.svg'
 
 export default function Index() {
-  const user = useOptionalUser();
+  const user = useOptionalUser()
   return (
     <main className="flex min-h-screen">
       <div className="w-sidebar flex-shrink-0">
@@ -52,5 +52,5 @@ export default function Index() {
         )}
       </div>
     </main>
-  );
+  )
 }

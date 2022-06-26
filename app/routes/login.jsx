@@ -1,82 +1,82 @@
-import React from "react";
+import React from 'react'
 
-import { json, redirect } from "@remix-run/node";
-import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
-import { verifyLogin } from "~/models/user.server";
-import { createUserSession, getUserId } from "~/session.server";
-import { validateEmail } from "~/utils";
+import { json, redirect } from '@remix-run/node'
+import { Form, Link, useActionData, useSearchParams } from '@remix-run/react'
+import { verifyLogin } from '~/models/user.server'
+import { createUserSession, getUserId } from '~/session.server'
+import { validateEmail } from '~/utils'
 
 export const meta = () => {
   return {
-    title: "Login",
-  };
-};
+    title: 'Login',
+  }
+}
 
 export const loader = async ({ request }) => {
-  const userId = await getUserId(request);
-  if (userId) return redirect("/");
-  return json({});
-};
+  const userId = await getUserId(request)
+  if (userId) return redirect('/')
+  return json({})
+}
 
 export const action = async ({ request }) => {
-  const formData = await request.formData();
-  const email = formData.get("email");
-  const password = formData.get("password");
-  const redirectTo = formData.get("redirectTo");
-  const remember = formData.get("remember");
+  const formData = await request.formData()
+  const email = formData.get('email')
+  const password = formData.get('password')
+  const redirectTo = formData.get('redirectTo')
+  const remember = formData.get('remember')
 
   if (!validateEmail(email)) {
-    return json({ errors: { email: "Email is invalid." } }, { status: 400 });
+    return json({ errors: { email: 'Email is invalid.' } }, { status: 400 })
   }
 
-  if (typeof password !== "string") {
+  if (typeof password !== 'string') {
     return json(
-      { errors: { password: "Valid password is required." } },
+      { errors: { password: 'Valid password is required.' } },
       { status: 400 }
-    );
+    )
   }
 
   if (password.length < 6) {
     return json(
-      { errors: { password: "Password is too short" } },
+      { errors: { password: 'Password is too short' } },
       { status: 400 }
-    );
+    )
   }
 
-  const user = await verifyLogin(email, password);
+  const user = await verifyLogin(email, password)
 
   if (!user) {
     return json(
-      { errors: { email: "Invalid email or password" } },
+      { errors: { email: 'Invalid email or password' } },
       { status: 400 }
-    );
+    )
   }
 
   return createUserSession({
     request,
     userId: user.id,
-    remember: remember === "on" ? true : false,
-    redirectTo: typeof redirectTo === "string" ? redirectTo : "/",
-  });
-};
+    remember: remember === 'on' ? true : false,
+    redirectTo: typeof redirectTo === 'string' ? redirectTo : '/',
+  })
+}
 
 export default function Login() {
-  const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") ?? "/";
+  const [searchParams] = useSearchParams()
+  const redirectTo = searchParams.get('redirectTo') ?? '/'
 
-  const actionData = useActionData();
-  const emailRef = React.useRef(null);
-  const passwordRef = React.useRef(null);
+  const actionData = useActionData()
+  const emailRef = React.useRef(null)
+  const passwordRef = React.useRef(null)
 
   React.useEffect(() => {
     if (actionData?.errors?.email) {
-      emailRef?.current?.focus();
+      emailRef?.current?.focus()
     }
 
     if (actionData?.errors?.password) {
-      passwordRef?.current?.focus();
+      passwordRef?.current?.focus()
     }
-  }, [actionData]);
+  }, [actionData])
 
   return (
     <div className="flex min-h-full flex-col justify-center">
@@ -149,10 +149,10 @@ export default function Login() {
               </label>
             </div>
             <div className="text-center text-sm text-gray-500">
-              Don't have an account?{" "}
+              Don't have an account?{' '}
               <Link
                 className="text-blue-500 underline"
-                to={{ pathname: "/join" }}
+                to={{ pathname: '/join' }}
               >
                 Sign up
               </Link>
@@ -161,5 +161,5 @@ export default function Login() {
         </Form>
       </div>
     </div>
-  );
+  )
 }

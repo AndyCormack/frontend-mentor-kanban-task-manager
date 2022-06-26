@@ -1,86 +1,86 @@
-import { json, redirect } from "@remix-run/node";
-import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
-import { createUserSession, getUserId } from "~/session.server";
-import { createUser, getProfileByEmail } from "~/models/user.server";
-import { validateEmail } from "~/utils";
-import * as React from "react";
+import { json, redirect } from '@remix-run/node'
+import { Form, Link, useActionData, useSearchParams } from '@remix-run/react'
+import { createUserSession, getUserId } from '~/session.server'
+import { createUser, getProfileByEmail } from '~/models/user.server'
+import { validateEmail } from '~/utils'
+import * as React from 'react'
 
 export const meta = () => {
   return {
-    title: "Sign Up",
-  };
-};
+    title: 'Sign Up',
+  }
+}
 
 export const loader = async ({ request }) => {
-  const userId = await getUserId(request);
-  if (userId) return redirect("/");
-  return json({});
-};
+  const userId = await getUserId(request)
+  if (userId) return redirect('/')
+  return json({})
+}
 
 export const action = async ({ request }) => {
-  const formData = await request.formData();
-  const email = formData.get("email");
-  const password = formData.get("password");
-  const redirectTo = formData.get("redirectTo");
+  const formData = await request.formData()
+  const email = formData.get('email')
+  const password = formData.get('password')
+  const redirectTo = formData.get('redirectTo')
 
   // Ensure the email is valid
   if (!validateEmail(email)) {
-    return json({ errors: { email: "Email is invalid." } }, { status: 400 });
+    return json({ errors: { email: 'Email is invalid.' } }, { status: 400 })
   }
 
   // What if a user sends us a password through other means than our form?
-  if (typeof password !== "string") {
+  if (typeof password !== 'string') {
     return json(
-      { errors: { password: "Valid password is required." } },
+      { errors: { password: 'Valid password is required.' } },
       { status: 400 }
-    );
+    )
   }
 
   // Enforce minimum password length
   if (password.length < 6) {
     return json(
-      { errors: { password: "Password is too short." } },
+      { errors: { password: 'Password is too short.' } },
       { status: 400 }
-    );
+    )
   }
 
   // A user could potentially already exist within our system
   // and we should communicate that well
-  const existingUser = await getProfileByEmail(email);
+  const existingUser = await getProfileByEmail(email)
   if (existingUser) {
     return json(
-      { errors: { email: "A user already exists with this email." } },
+      { errors: { email: 'A user already exists with this email.' } },
       { status: 400 }
-    );
+    )
   }
 
-  const user = await createUser(email, password);
+  const user = await createUser(email, password)
 
   return createUserSession({
     request,
     userId: user.id,
     remember: false,
-    redirectTo: typeof redirectTo === "string" ? redirectTo : "/",
-  });
-};
+    redirectTo: typeof redirectTo === 'string' ? redirectTo : '/',
+  })
+}
 
 export default function Join() {
-  const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") ?? undefined;
+  const [searchParams] = useSearchParams()
+  const redirectTo = searchParams.get('redirectTo') ?? undefined
 
-  const actionData = useActionData();
-  const emailRef = React.useRef(null);
-  const passwordRef = React.useRef(null);
+  const actionData = useActionData()
+  const emailRef = React.useRef(null)
+  const passwordRef = React.useRef(null)
 
   React.useEffect(() => {
     if (actionData?.errors?.email) {
-      emailRef?.current?.focus();
+      emailRef?.current?.focus()
     }
 
     if (actionData?.errors?.password) {
-      passwordRef?.current?.focus();
+      passwordRef?.current?.focus()
     }
-  }, [actionData]);
+  }, [actionData])
 
   return (
     <div className="flex min-h-full flex-col justify-center">
@@ -138,11 +138,11 @@ export default function Join() {
           <input type="hidden" name="redirectTo" value={redirectTo} />
           <div className="flex items-center justify-center">
             <div className="text-center text-sm text-gray-500">
-              Already have an account?{" "}
+              Already have an account?{' '}
               <Link
                 className="text-blue-500 underline"
                 to={{
-                  pathname: "/login",
+                  pathname: '/login',
                   search: searchParams.toString(),
                 }}
               >
@@ -153,5 +153,5 @@ export default function Join() {
         </Form>
       </div>
     </div>
-  );
+  )
 }

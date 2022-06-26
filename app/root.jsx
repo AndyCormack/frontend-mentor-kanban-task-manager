@@ -1,4 +1,4 @@
-import { json } from "@remix-run/node";
+import { json } from '@remix-run/node'
 import {
   Links,
   LiveReload,
@@ -6,27 +6,27 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-} from "@remix-run/react";
+} from '@remix-run/react'
 
-import tailwindStylesheetUrl from "./styles/tailwind.css";
-import { getUser } from "./session.server";
+import tailwindStylesheetUrl from './styles/tailwind.css'
+import { getUser } from './session.server'
 
 export const meta = () => {
-  return { title: "Kanban Task Manager" };
-};
+  return { title: 'Kanban Task Manager' }
+}
 
 export const links = () => {
   return [
-    { rel: "stylesheet", href: tailwindStylesheetUrl },
-    { rel: "icon", href: "/favicon.png", type: "image/png" },
-  ];
-};
+    { rel: 'stylesheet', href: tailwindStylesheetUrl },
+    { rel: 'icon', href: '/favicon.png', type: 'image/png' },
+  ]
+}
 
 export const loader = async ({ request }) => {
   return json({
     user: await getUser(request),
-  });
-};
+  })
+}
 
 export default function App() {
   return (
@@ -44,5 +44,5 @@ export default function App() {
         <LiveReload />
       </body>
     </html>
-  );
+  )
 }
