@@ -12,11 +12,14 @@ import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
 
 export const meta = () => {
-  return { title: "New Remix App" };
+  return { title: "Kanban Task Manager" };
 };
 
 export const links = () => {
-  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
+  return [
+    { rel: "stylesheet", href: tailwindStylesheetUrl },
+    { rel: "icon", href: "/favicon.png", type: "image/png" },
+  ];
 };
 
 export const loader = async ({ request }) => {
