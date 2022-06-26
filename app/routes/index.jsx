@@ -1,10 +1,16 @@
 import { Form, Link } from "@remix-run/react";
 import { useOptionalUser } from "~/utils";
 
+import logo from "~/assets/logo-light.svg";
+
 export default function Index() {
   const user = useOptionalUser();
   return (
-    <main className="flex min-h-screen items-center justify-center">
+    <main className="flex min-h-screen">
+      <div className="w-sidebar flex-shrink-0">
+        <img src={logo} alt="Kanban" />
+      </div>
+
       <div className="flex flex-col justify-center gap-4">
         <h1 className="text-3xl">
           <span className="text-blue-500">Frontend Mentor</span> Kanban Task
