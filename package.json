@@ -18,7 +18,11 @@
     "start": "cross-env NODE_ENV=production netlify dev",
     "typecheck": "tsc -b"
   },
-  "prettier": {},
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "semi": false
+  },
   "eslintIgnore": [
     "/netlify/functions/server",
     "/node_modules",
